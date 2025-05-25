@@ -112,7 +112,28 @@ def execute_task(task):
     else:
         print(f"⚠️ Tarea desconocida: {task}")
 
+import time
+
+def loop_estado():
+    contador = 1
+    while True:
+        try:
+            with open("status_log.json", "r") as f:
+                estado = json.load(f)
+                msg = f"""🧠 LucianoAI Report (#{contador}):
+✅ Estado: operativo
+⏱ Última acción: {estado.get('last_action', '---')}
+💰 Balance: {estado.get('balance', '---')}
+📊 Órdenes ejecutadas: {estado.get('orders', '---')}
+📅 Hora: {estado.get('timestamp', '---')}
+"""
+        except:
+            msg = "🧠 LucianoAI: No se pudo leer el estado actual del sistema."
+        notify_user(msg)
+        contador += 1
+        time.sleep(300)  # Espera 5 minutos entre informes
+
 if __name__ == "__main__":
     print("🧤 Manos ACTIVAS esperando órdenes.")
-    # Ejemplo estático de ejecución (puede reemplazarse con input dinámico o loop)
     execute_task("crear_bot_ETH")
+    loop_estado()
