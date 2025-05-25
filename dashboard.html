@@ -6,6 +6,19 @@
         body { background: #0d0d0d; color: #f5f5f5; font-family: Arial; text-align: center; }
         h1 { color: gold; margin-top: 50px; }
         .box { background: #1a1a1a; border: 2px solid gold; padding: 20px; margin: 30px auto; width: 70%; border-radius: 10px; }
+        button {
+            background: gold;
+            color: black;
+            border: none;
+            padding: 10px 20px;
+            margin-top: 10px;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #ffd700;
+        }
     </style>
 </head>
 <body>
@@ -17,5 +30,26 @@
         <p>MEXC: ✅</p>
         <p>Update: AUTO ✅</p>
     </div>
+</body>
+    <div class="box">
+        <h2>📊 Estadísticas del Bot</h2>
+        <p>Balance actual: <span id="balance">--</span> ETH</p>
+        <p>Órdenes ejecutadas: <span id="orders">--</span></p>
+        <p>Última acción: <span id="last-action">--</span></p>
+        <button onclick="refreshStatus()">🔁 Actualizar</button>
+    </div>
+
+    <script>
+        async function refreshStatus() {
+            // Simulación de update en vivo
+            document.getElementById("balance").textContent = "2.471";
+            document.getElementById("orders").textContent = "17";
+            document.getElementById("last-action").textContent = "Venta parcial 25% - ETH";
+        }
+
+        // Auto-refresh cada 15s
+        setInterval(refreshStatus, 15000);
+        refreshStatus();
+    </script>
 </body>
 </html>
