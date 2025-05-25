@@ -32,22 +32,28 @@
     </div>
 </body>
     <div class="box">
-        <h2>📊 Estadísticas del Bot</h2>
-        <p>Balance actual: <span id="balance">--</span> ETH</p>
-        <p>Órdenes ejecutadas: <span id="orders">--</span></p>
-        <p>Última acción: <span id="last-action">--</span></p>
-        <button onclick="refreshStatus()">🔁 Actualizar</button>
+        <h2>📡 Estadísticas del Bot (en vivo)</h2>
+        <p>Balance actual: <span id="balance">Cargando...</span> ETH</p>
+        <p>Órdenes ejecutadas: <span id="orders">Cargando...</span></p>
+        <p>Última acción: <span id="last-action">Cargando...</span></p>
+        <button onclick="refreshStatus()">🔁 Actualizar en vivo</button>
     </div>
 
     <script>
         async function refreshStatus() {
-            // Simulación de update en vivo
-            document.getElementById("balance").textContent = "2.471";
-            document.getElementById("orders").textContent = "17";
-            document.getElementById("last-action").textContent = "Venta parcial 25% - ETH";
+            try {
+                const response = await fetch("/status");
+                const data = await response.json();
+
+                document.getElementById("balance").textContent = data.balance || "--";
+                document.getElementById("orders").textContent = data.orders || "--";
+                document.getElementById("last-action").textContent = data.last_action || "--";
+            } catch (error) {
+                console.error("Error al obtener estado:", error);
+            }
         }
 
-        // Auto-refresh cada 15s
+        // Auto-refresh cada 15 segundos
         setInterval(refreshStatus, 15000);
         refreshStatus();
     </script>

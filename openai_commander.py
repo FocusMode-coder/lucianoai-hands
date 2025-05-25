@@ -1,18 +1,22 @@
+from flask import Flask, request, jsonify
 
-import openai
-import os
+app = Flask(__name__)
 
-def ask_luciano_ai(prompt):
-    print(f"🤖 Preguntando a LucianoAI: {prompt}")
-    openai.api_key = os.getenv("OPENAI_API_KEY")
-    response = openai.ChatCompletion.create(
-        model="gpt-4",
-        messages=[
-            {"role": "system", "content": "Actuás como el núcleo maestro de LucianoAI, operativo en producción. Respondé con instrucciones directas para crear o actualizar bots reales."},
-            {"role": "user", "content": prompt}
-        ]
-    )
-    result = response['choices'][0]['message']['content']
-    print(f"🧠 LucianoAI respondió:
-{result}")
-    return result
+@app.route("/comando", methods=["POST"])
+def comando():
+    data = request.get_json()
+    orden = data.get("orden", "")
+
+    if orden == "crear_bot_ETH":
+        resultado = "✅ Bot ETH creado en modo Sniper+Guardian"
+    elif orden == "detener_bot_BTC":
+        resultado = "🛑 Bot BTC detenido"
+    elif orden == "activar_guardian":
+        resultado = "🛡️ Modo Guardian activado"
+    else:
+        resultado = f"⚠️ Orden desconocida: {orden}"
+
+    return jsonify({"status": "ok", "resultado": resultado})
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=10000)

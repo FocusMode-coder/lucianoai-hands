@@ -2,21 +2,27 @@ import os
 import requests
 import zipfile
 import io
+import time
 
 UPDATE_URL = os.getenv("UPDATE_URL", "")
 AUTO_UPDATE = os.getenv("AUTO_UPDATE", "false").lower() == "true"
 
 def download_and_extract_zip(url, extract_to="."):
-    response = requests.get(url)
-    if response.status_code == 200:
-        with zipfile.ZipFile(io.BytesIO(response.content)) as zip_ref:
-            zip_ref.extractall(extract_to)
-            print("✅ Update applied from:", url)
-    else:
-        print("❌ Failed to download update.")
+    try:
+        response = requests.get(url)
+        if response.status_code == 200:
+            with zipfile.ZipFile(io.BytesIO(response.content)) as zip_ref:
+                zip_ref.extractall(extract_to)
+            print("✅ Update aplicado automáticamente desde:", url)
+        else:
+            print(f"❌ Error al descargar update ({response.status_code})")
+    except Exception as e:
+        print("❌ Excepción en update:", e)
 
 if AUTO_UPDATE and UPDATE_URL:
-    print("🔄 Auto-update enabled. Checking for updates...")
-    download_and_extract_zip(UPDATE_URL)
+    print("🔄 Auto-update activado. Verificando cada 30 min...")
+    while True:
+        download_and_extract_zip(UPDATE_URL)
+        time.sleep(1800)  # 30 minutos
 else:
-    print("🟡 Update manager idle.")
+    print("🟡 Auto-update desactivado o sin URL.")
