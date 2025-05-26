@@ -5,13 +5,16 @@ import os
 
 app = Flask(__name__)
 
+client = openai.OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+
 def ask_luciano_ai(prompt):
-    openai.api_key = os.getenv("OPENAI_API_KEY")
     try:
-        response = openai.ChatCompletion.create(
+        response = client.chat.completions.create(
             model="gpt-4",
-            messages=[{"role": "system", "content": "Sos LucianoAI, un arquitecto de bots."},
-                      {"role": "user", "content": prompt}]
+            messages=[
+                {"role": "system", "content": "Sos LucianoAI, un arquitecto de bots."},
+                {"role": "user", "content": prompt}
+            ]
         )
         return response.choices[0].message.content
     except Exception as e:

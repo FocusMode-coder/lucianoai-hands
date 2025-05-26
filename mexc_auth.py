@@ -6,6 +6,10 @@ import requests
 
 API_KEY = os.getenv("MEXC_API_KEY")
 SECRET_KEY = os.getenv("MEXC_SECRET_KEY")
+
+if not API_KEY or not SECRET_KEY:
+    raise EnvironmentError("🔐 Claves MEXC no encontradas. Asegurate de cargar MEXC_API_KEY y MEXC_SECRET_KEY en Render → Environment.")
+
 BASE_URL = os.getenv("MEXC_API_URL", "https://api.mexc.com")
 
 def sign_params(params):
