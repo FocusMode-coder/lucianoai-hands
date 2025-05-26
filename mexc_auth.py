@@ -9,6 +9,8 @@ SECRET_KEY = os.getenv("MEXC_SECRET_KEY")
 BASE_URL = os.getenv("MEXC_API_URL", "https://api.mexc.com")
 
 def sign_params(params):
+    if not SECRET_KEY:
+        raise ValueError("SECRET_KEY no está definido. Verificá el archivo .env y asegúrate de hacer el deploy con las variables de entorno correctas.")
     query = "&".join([f"{k}={v}" for k, v in sorted(params.items())])
     signature = hmac.new(SECRET_KEY.encode(), query.encode(), hashlib.sha256).hexdigest()
     return f"{query}&signature={signature}"
