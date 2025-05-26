@@ -46,6 +46,23 @@ def run_status_loop():
     from hands import loop_estado
     loop_estado()
 
+# --- New bot runners ---
+def run_eth_bot():
+    print("🚀 Ejecutando ETH Bot...")
+    try:
+        subprocess.run(["python3", "eth_bot.py"], check=True)
+        log_global("🚀 ETH Bot iniciado")
+    except Exception as e:
+        log_global(f"❌ Error en ETH Bot: {e}")
+
+def run_btc_bot():
+    print("🚀 Ejecutando BTC Bot...")
+    try:
+        subprocess.run(["python3", "btc_bot.py"], check=True)
+        log_global("🚀 BTC Bot iniciado")
+    except Exception as e:
+        log_global(f"❌ Error en BTC Bot: {e}")
+
 def check_env():
     critical_vars = [
         "TELEGRAM_TOKEN", "TELEGRAM_CHAT_ID",
@@ -70,3 +87,5 @@ if __name__ == "__main__":
     Process(target=run_commander).start()
     Process(target=run_status_loop).start()
     Process(target=guardian_loop).start()
+    Process(target=run_eth_bot).start()
+    Process(target=run_btc_bot).start()
