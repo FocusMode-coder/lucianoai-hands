@@ -1,0 +1,7 @@
+{
+  "balance": "0",
+  "orders": "0",
+  "last_action": "Sistema iniciado"
+}
+---
+🧠 [LucianoAI] Sistema iniciado correctamente. Esperando órdenes.
