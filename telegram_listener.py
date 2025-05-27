@@ -1,6 +1,9 @@
 import os
+from dotenv import load_dotenv
+load_dotenv()
 import telebot  # pip install pyTelegramBotAPI
 import requests
+from flask import Flask, request
 
 API_KEY = os.getenv("OPENAI_API_KEY")
 BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
@@ -31,5 +34,18 @@ def handle_message(message):
     respuesta = ask_luciano(user_input)
     bot.reply_to(message, respuesta)
 
-print("🤖 Escuchando en Telegram...")
-bot.polling()
+WEBHOOK_URL = os.getenv("WEBHOOK_URL", "https://your-render-url.onrender.com")
+
+app = Flask(__name__)
+
+@app.route("/", methods=["POST"])
+def webhook():
+    update = telebot.types.Update.de_json(request.stream.read().decode("utf-8"))
+    bot.process_new_updates([update])
+    return "OK", 200
+
+if __name__ == "__main__":
+    bot.remove_webhook()
+    bot.set_webhook(url=WEBHOOK_URL)
+    print("🤖 Webhook configurado y escuchando en Flask...")
+    app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 10001)))
