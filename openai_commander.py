@@ -46,6 +46,10 @@ def handle_telegram_message(message):
     bot.send_message(message.chat.id, f"🧠 LucianoAI responde:\n\n{response}")
 
 # Health check and logging integration endpoint
+@app.route("/", methods=["GET"])
+def root():
+    return jsonify({"status": "online", "message": "LucianoAI está despierto y operativo."})
+
 @app.route("/status", methods=["GET"])
 def status():
     return jsonify({
