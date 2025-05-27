@@ -1,42 +1,119 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>LucianoAI Dashboard</title>
-  <style>
-    body {
-      background-color: #111;
-      color: #fff;
-      font-family: 'Segoe UI', sans-serif;
-      margin: 0;
-      padding: 2rem;
-    }
-    h1 {
-      color: #0ff88;
-    }
-    .status {
-      background-color: #222;
-      border-left: 5px solid #0ff88;
-      padding: 1rem;
-      margin-bottom: 1rem;
-    }
-    code {
-      background: #333;
-      padding: 0.2rem 0.4rem;
-      border-radius: 4px;
-      color: #0ff;
-    }
-  </style>
+    <title>LucianoAI – Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background: radial-gradient(ellipse at center, #0d0d0d 0%, #050505 100%);
+            color: #f5f5f5;
+            font-family: 'Orbitron', sans-serif;
+            text-align: center;
+            animation: pulse-bg 15s infinite alternate;
+        }
+
+        @keyframes pulse-bg {
+            from { background-color: #0d0d0d; }
+            to { background-color: #1a1a1a; }
+        }
+
+        h1 {
+            color: gold;
+            margin-top: 50px;
+            font-size: 2.5em;
+            text-shadow: 0 0 15px gold;
+        }
+
+        .box {
+            background: rgba(26, 26, 26, 0.85);
+            border: 2px solid gold;
+            padding: 20px;
+            margin: 30px auto;
+            width: 70%;
+            border-radius: 10px;
+            box-shadow: 0 0 20px gold;
+            transition: all 0.3s ease-in-out;
+        }
+
+        .box:hover {
+            box-shadow: 0 0 35px gold;
+        }
+
+        button {
+            background: gold;
+            color: black;
+            border: none;
+            padding: 12px 24px;
+            margin: 10px;
+            font-weight: bold;
+            font-size: 1em;
+            border-radius: 8px;
+            cursor: pointer;
+            box-shadow: 0 0 10px gold;
+            transition: all 0.2s ease;
+        }
+
+        button:hover {
+            background: #ffd700;
+            box-shadow: 0 0 20px #ffd700;
+        }
+
+        h2 {
+            color: #00ffff;
+            text-shadow: 0 0 10px #00ffff;
+        }
+
+        span {
+            font-size: 1.3em;
+            color: #39ff14;
+            text-shadow: 0 0 5px #39ff14;
+        }
+    </style>
 </head>
 <body>
-  <h1>🧠 LucianoAI Modo Dios – Dashboard</h1>
-  <div class="status">
-    <p>✅ Sistema activo y ejecutándose en Render.</p>
-    <p>🛠 Bots en construcción, 🛡 guardianes encendidos.</p>
-    <p>🎧 Escuchando comandos en tiempo real.</p>
-    <p>📩 Reportes por Telegram activos.</p>
-    <p>⏱ Última actualización: <code>{{ timestamp }}</code></p>
-  </div>
+    <h1>⚡ LucianoAI - Modo Dios ACTIVADO</h1>
+    <div class="box">
+        <p>Status: ONLINE</p>
+        <p>Última orden: crear_bot_ETH</p>
+        <p>Telegram: ✅</p>
+        <p>MEXC: ✅</p>
+        <p>Update: AUTO ✅</p>
+    </div>
+</body>
+    <div class="box">
+        <h2>📡 Estadísticas del Bot (en vivo)</h2>
+        <p>Balance actual: <span id="balance">Cargando...</span> ETH</p>
+        <p>Órdenes ejecutadas: <span id="orders">Cargando...</span></p>
+        <p>Última acción: <span id="last-action">Cargando...</span></p>
+        <button onclick="refreshStatus()">🔁 Actualizar en vivo</button>
+        <button onclick="window.open('/log', '_blank')">📄 Ver log del sistema</button>
+    </div>
+
+    <script>
+        async function refreshStatus() {
+            try {
+                const response = await fetch("/status");
+                const data = await response.json();
+
+                document.getElementById("balance").textContent = data.balance || "--";
+                document.getElementById("orders").textContent = data.orders || "--";
+                document.getElementById("last-action").textContent = data.last_action || "--";
+
+                const telegramLine = document.querySelector('p:nth-child(3)');
+                const mexcLine = document.querySelector('p:nth-child(4)');
+                const updateLine = document.querySelector('p:nth-child(5)');
+
+                if (telegramLine) telegramLine.innerHTML = `Telegram: ${data.telegram_status ? '✅' : '❌'}`;
+                if (mexcLine) mexcLine.innerHTML = `MEXC: ${data.mexc_status ? '✅' : '❌'}`;
+                if (updateLine) updateLine.innerHTML = `Update: ${data.update_status ? '✅' : '❌'}`;
+            } catch (error) {
+                console.error("Error al obtener estado:", error);
+            }
+        }
+
+        // Auto-refresh cada 15 segundos
+        setInterval(refreshStatus, 15000);
+        refreshStatus();
+    </script>
 </body>
 </html>
