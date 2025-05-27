@@ -15,8 +15,12 @@ def run_telegram_listener():
             bot = telebot.TeleBot(os.getenv("TELEGRAM_TOKEN"))
             bot.remove_webhook()
             bot.set_webhook(url=webhook_url)
+            print(f"🌐 Webhook establecido en: {webhook_url}")
             log_global(f"🌐 Webhook configurado en {webhook_url}")
-        subprocess.run(["python3", "telegram_listener.py"], check=True)
+            # subprocess.run(["python3", "telegram_listener.py"], check=True)
+            print("🟡 Modo webhook activo, sin polling telegram_listener.py")
+        else:
+            subprocess.run(["python3", "telegram_listener.py"], check=True)
         log_global("📨 Telegram Listener iniciado")
     except Exception as e:
         log_global(f"❌ Error en Telegram Listener: {e}")
@@ -142,7 +146,7 @@ def start_all():
     Process(target=run_listener).start()
     Process(target=run_updater).start()
     Process(target=run_commander).start()
-    if os.getenv("HOSTED_ON") == "RENDER":
+    if os.getenv("TELEGRAM_USE_WEBHOOK") == "true":
         Process(target=run_telegram_listener).start()
     Process(target=run_status_loop).start()
     Process(target=guardian_loop).start()

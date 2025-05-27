@@ -10,10 +10,9 @@ TELEGRAM_TOKEN = os.getenv("TELEGRAM_TOKEN") or "7816703837:AAGBFm5rTW4H9n-VJ6rb
 CHAT_ID = os.getenv("CHAT_ID") or "7613460488"
 bot = telebot.TeleBot(TELEGRAM_TOKEN)
 
-client = openai.Client(api_key=os.getenv("OPENAI_API_KEY"))
-
 def ask_luciano_ai(prompt):
     try:
+        client = openai.Client(api_key=os.getenv("OPENAI_API_KEY"))
         response = client.chat.completions.create(
             model="gpt-3.5-turbo",
             messages=[
