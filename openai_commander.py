@@ -57,13 +57,15 @@ def status():
         "openai": "connected"
     })
 
+@app.route('/', methods=['POST'])
+def webhook():
+    if request.headers.get('content-type') == 'application/json':
+        json_str = request.get_data().decode('UTF-8')
+        update = telebot.types.Update.de_json(json_str)
+        bot.process_new_updates([update])
+        return 'ok', 200
+    else:
+        return 'unsupported content type', 403
+
 if __name__ == '__main__':
-    import threading
-    def run_flask():
-        app.run(host='0.0.0.0', port=10001)
-
-    def run_telegram():
-        bot.infinity_polling()
-
-    threading.Thread(target=run_flask).start()
-    threading.Thread(target=run_telegram).start()
+    app.run(host='0.0.0.0', port=10001)
