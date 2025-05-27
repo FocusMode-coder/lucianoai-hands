@@ -28,7 +28,7 @@ def log_global(msg):
 def run_dashboard():
     print("🚀 Iniciando dashboard Flask...")
     try:
-        subprocess.run(["python3", "dashboard.py"], check=True)
+        subprocess.run(["python3", "dashboard.py", "--host=0.0.0.0", "--port=10000"], check=True)
         log_global("🚀 Dashboard iniciado")
     except Exception as e:
         log_global(f"❌ Error en dashboard: {e}")
@@ -58,7 +58,7 @@ def run_updater():
 def run_commander():
     print("🧠 Iniciando núcleo LucianoAI...")
     try:
-        subprocess.run(["python3", "openai_commander.py"], check=True)
+        subprocess.run(["python3", "openai_commander.py", "--host=0.0.0.0", "--port=10001"], check=True)
         log_global("🧠 Núcleo LucianoAI iniciado")
     except Exception as e:
         log_global(f"❌ Error en núcleo: {e}")

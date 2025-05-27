@@ -10,7 +10,7 @@ TELEGRAM_TOKEN = os.getenv("TELEGRAM_TOKEN") or "7816703837:AAGBFm5rTW4H9n-VJ6rb
 CHAT_ID = os.getenv("CHAT_ID") or "7613460488"
 bot = telebot.TeleBot(TELEGRAM_TOKEN)
 
-client = openai.OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+client = openai.Client(api_key=os.getenv("OPENAI_API_KEY"))
 
 def ask_luciano_ai(prompt):
     try:
@@ -38,14 +38,29 @@ def comando():
     return jsonify({"status": "ok", "resultado": resultado})
 
 
+
 @bot.message_handler(func=lambda message: True)
 def handle_telegram_message(message):
     prompt = message.text
     response = ask_luciano_ai(prompt)
     bot.send_message(message.chat.id, f"🧠 LucianoAI responde:\n\n{response}")
 
-if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=10001)
+# Health check and logging integration endpoint
+@app.route("/status", methods=["GET"])
+def status():
+    return jsonify({
+        "status": "online",
+        "telegram": "connected",
+        "openai": "connected"
+    })
 
-# Keep-alive loop for bot polling, if needed in the future
-bot.infinity_polling()
+if __name__ == '__main__':
+    import threading
+    def run_flask():
+        app.run(host='0.0.0.0', port=10001)
+
+    def run_telegram():
+        bot.infinity_polling()
+
+    threading.Thread(target=run_flask).start()
+    threading.Thread(target=run_telegram).start()

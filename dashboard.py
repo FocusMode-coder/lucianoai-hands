@@ -84,4 +84,7 @@ def log():
     return f"<pre>{contenido}</pre>"
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=10000)
+    from threading import Thread
+    def run_flask():
+        app.run(host="0.0.0.0", port=10000)
+    Thread(target=run_flask).start()
