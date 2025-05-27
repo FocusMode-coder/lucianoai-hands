@@ -7,7 +7,20 @@ app = Flask(__name__)
 
 @app.route("/")
 def dashboard():
-    return render_template("dashboard.html")
+    try:
+        with open("status_log.json", "r") as f:
+            estado = json.load(f)
+    except:
+        estado = {
+            "luciano_ai": "No disponible",
+            "bots_activos": [],
+            "estado_telegram": "Desconocido",
+            "mexc_balance": "???",
+            "ultimas_ordenes": [],
+            "stocks": {},
+            "construccion": "No iniciado"
+        }
+    return render_template("dashboard.html", estado=estado)
 
 @app.route("/comando", methods=["POST"])
 def comando():
@@ -44,8 +57,22 @@ def status():
         with open("status_log.json", "r") as f:
             data = json.load(f)
     except:
-        data = {"balance": "--", "orders": "--", "last_action": "Sin datos"}
+        data = {
+            "luciano_ai": "No disponible",
+            "bots_activos": [],
+            "estado_telegram": "Desconocido",
+            "mexc_balance": "???",
+            "ultimas_ordenes": [],
+            "stocks": {},
+            "construccion": "No iniciado"
+        }
     return jsonify(data)
+
+# Endpoint futuro para obtener estado real de MEXC (TODO)
+# @app.route("/api_estado_mexc")
+# def api_estado_mexc():
+#     # TODO: Implementar lectura de balance real de MEXC usando API key almacenadas
+#     return jsonify({"mexc_balance": "TODO"})
 
 @app.route("/log")
 def log():

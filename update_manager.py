@@ -26,3 +26,16 @@ if AUTO_UPDATE and UPDATE_URL:
         time.sleep(1800)  # 30 minutos
 else:
     print("🟡 Auto-update desactivado o sin URL.")
+
+    # Reparación automática si falla algún módulo clave
+    try:
+        import mexc_auth
+        import eth_bot
+    except ImportError as e:
+        print("🛠 Detectado módulo faltante o corrupto:", e)
+        if UPDATE_URL:
+            print("🔁 Intentando reparar desde update URL...")
+            download_and_extract_zip(UPDATE_URL)
+            print("✅ Reparación forzada aplicada.")
+        else:
+            print("❗ No se pudo reparar: faltan URL de update.")

@@ -4,8 +4,8 @@ import hashlib
 import time
 import requests
 
-API_KEY = os.getenv("MEXC_API_KEY")
-SECRET_KEY = os.getenv("MEXC_SECRET_KEY")
+API_KEY = os.getenv("MEXC_API_KEY", "").strip()
+SECRET_KEY = os.getenv("MEXC_SECRET_KEY", "").strip()
 
 if not API_KEY or not SECRET_KEY:
     raise EnvironmentError("🔐 Claves MEXC no encontradas. Asegurate de cargar MEXC_API_KEY y MEXC_SECRET_KEY en Render → Environment.")
@@ -32,5 +32,15 @@ def get_account_info():
     headers = {
         "X-MEXC-APIKEY": API_KEY
     }
-    response = requests.get(url, headers=headers)
-    return response.json()
+    try:
+        response = requests.get(url, headers=headers)
+        response.raise_for_status()
+        data = response.json()
+        if "balances" in data:
+            return {"balance": sum(float(asset["free"]) for asset in data["balances"] if float(asset["free"]) > 0)}
+        else:
+            print(f"⚠️ Error: Clave 'balances' no encontrada en la respuesta. Respuesta completa: {data}")
+            return {"balance": "???"}
+    except requests.exceptions.RequestException as e:
+        print(f"❌ Error al obtener cuenta MEXC: {e}")
+        return {"balance": "???"}
